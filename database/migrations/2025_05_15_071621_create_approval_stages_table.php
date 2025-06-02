@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('approval_stages', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('approval_id')->constrained('approvals')->onDelete('cascade');
+            $table->foreignId('approver_id')->constrained('approvers')->onDelete('cascade');
             $table->timestamps();
         });
     }

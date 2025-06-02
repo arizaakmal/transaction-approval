@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateApprovalStageRequest extends FormRequest
@@ -11,7 +12,7 @@ class UpdateApprovalStageRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,8 +22,15 @@ class UpdateApprovalStageRequest extends FormRequest
      */
     public function rules(): array
     {
+        $id = $this->route('id');
+
         return [
-            //
+            'approver_id' => [
+                'required',
+                'integer',
+                'exists:approvers,id',
+                Rule::unique('approval_stages', 'approver_id')->ignore($id),
+            ],
         ];
     }
 }

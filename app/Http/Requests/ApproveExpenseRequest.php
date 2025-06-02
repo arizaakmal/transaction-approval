@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Approval;
+use App\Rules\ValidApprovalStage;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ApproveExpenseRequest extends FormRequest
@@ -11,7 +13,7 @@ class ApproveExpenseRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +24,12 @@ class ApproveExpenseRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'approver_id' => [
+                'required',
+                'integer',
+                'exists:approvers,id',
+                new ValidApprovalStage($this->route('id'))
+            ],
         ];
     }
 }

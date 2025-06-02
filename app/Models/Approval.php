@@ -11,7 +11,6 @@ class Approval extends Model
         'expense_id',
         'approver_id',
         'status_id',
-       ,
     ];
 
     public function expense()

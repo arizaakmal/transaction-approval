@@ -11,7 +11,7 @@ class StoreApprovalStageRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,7 @@ class StoreApprovalStageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'approver_id' => 'required|exists:approvers,id|unique:approval_stages,approver_id',
         ];
     }
 }
