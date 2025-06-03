@@ -37,4 +37,9 @@ class ExpenseService
 
         return $expense;
     }
+
+    public function show(int $id): Expense
+    {
+        return Expense::with('approvals')->findOrFail($id);
+    }
 }
