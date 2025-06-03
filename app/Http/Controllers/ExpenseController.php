@@ -34,15 +34,23 @@ class ExpenseController extends Controller
         return response()->json($updatedExpense);
     }
 
-    public function show($id)
+    // public function show($id)
+    // {
+    //     try {
+    //         $expense = $this->expenseService->show($id);
+    //         return new ExpenseResource($expense);
+    //     } catch (ModelNotFoundException $e) {
+    //         return response()->json([
+    //             'message' => 'Expense not found.',
+    //             'errors' => [
+    //                 'id' => ['Expense not found.']
+    //             ]
+    //         ], 404);
+    //     }
+    // }
+
+    public function show(Expense $id)
     {
-        try {
-            $expense = $this->expenseService->show($id);
-            return new ExpenseResource($expense);
-        } catch (ModelNotFoundException $e) {
-            return response()->json([
-                'message' => 'Expense not found.'
-            ], 404);
-        }
+        return new ExpenseResource($id);
     }
 }
