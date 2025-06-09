@@ -16,6 +16,9 @@ class ApproverSeeder extends Seeder
         Approver::insert([
             ['id' => 1, 'name' => 'John Doe', 'created_at' => now(), 'updated_at' => now()],
             ['id' => 2, 'name' => 'John Smith', 'created_at' => now(), 'updated_at' => now()],
+            ['id' => 3, 'name' => 'Jane Doe', 'created_at' => now(), 'updated_at' => now()],
+            ['id' => 4, 'name' => 'Jane Smith', 'created_at' => now(), 'updated_at' => now()],
+            ['id' => 5, 'name' => 'Alice Johnson', 'created_at' => now(), 'updated_at' => now()],
         ]);
     }
 }
