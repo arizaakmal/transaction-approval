@@ -37,10 +37,10 @@ class ExpenseApprovalTest extends TestCase
 
     public function test_expense_approval_flow()
     {
-        // Buat Approver dan Approval Stage
+        // Create Approvers and Approval Stages
         extract($this->createApproversAndStages());
 
-        // Buat 4 pengeluaran
+        // Create 4 expenses
         $expenses = [];
         for ($i = 0; $i < 4; $i++) {
             $response = $this->postJson('/api/expense', ['amount' => 1000 * ($i + 1)]);
@@ -48,7 +48,7 @@ class ExpenseApprovalTest extends TestCase
             $expenses[] = $response->json();
         }
 
-        // Pengeluaran 1 → semua approver approve
+        // Expense 1 → all approvers approve
         $this->patchJson("/api/expense/{$expenses[0]['id']}/approve", ['approver_id' => $ana['id']])->assertStatus(200);
         $this->patchJson("/api/expense/{$expenses[0]['id']}/approve", ['approver_id' => $ani['id']])->assertStatus(200);
         $this->patchJson("/api/expense/{$expenses[0]['id']}/approve", ['approver_id' => $ina['id']])->assertStatus(200);
@@ -59,7 +59,7 @@ class ExpenseApprovalTest extends TestCase
         ]);
 
 
-        // Pengeluaran 2 → 2 approver approve
+        // Expense 2 → 2 approvers approve
         $this->patchJson("/api/expense/{$expenses[1]['id']}/approve", ['approver_id' => $ana['id']])->assertStatus(200);
         $this->patchJson("/api/expense/{$expenses[1]['id']}/approve", ['approver_id' => $ani['id']])->assertStatus(200);
 
@@ -69,7 +69,7 @@ class ExpenseApprovalTest extends TestCase
             'status_id' => 1,
         ]);
 
-        // Pengeluaran 3 → 1 approver approve
+        // Expense 3 → 1 approver approves
         $this->patchJson("/api/expense/{$expenses[2]['id']}/approve", ['approver_id' => $ana['id']])->assertStatus(200);
 
 
@@ -78,7 +78,7 @@ class ExpenseApprovalTest extends TestCase
             'status_id' => 1,
         ]);
 
-        // Pengeluaran 4 → tidak ada approval
+        // Expense 4 → no approval
         $this->assertDatabaseHas('expenses', [
             'id' => $expenses[3]['id'],
             'status_id' => 1,
@@ -87,40 +87,40 @@ class ExpenseApprovalTest extends TestCase
 
     public function test_approver_cannot_approve_twice()
     {
-        // Buat Approver dan Approval Stage
+        // Create Approvers and Approval Stages
         extract($this->createApproversAndStages());
 
-        // Buat 1 pengeluaran
+        // Create 1 expense
         $expense = $this->postJson('/api/expense', ['amount' => 1000])->json();
 
-        // Approve pertama kali
+        // First approval
         $this->patchJson("/api/expense/{$expense['id']}/approve", ['approver_id' => $ana['id']])->assertStatus(200);
 
-        // Coba approve lagi, harus gagal
+        // Try to approve again, should fail
         $this->patchJson("/api/expense/{$expense['id']}/approve", ['approver_id' => $ana['id']])->assertStatus(422);
     }
 
     public function test_approval_sequence_must_be_followed()
     {
-        // Buat Approver dan Approval Stage
+        // Create Approvers and Approval Stages
         extract($this->createApproversAndStages());
 
-        // Buat 1 pengeluaran
+        // Create 1 expense
         $expense = $this->postJson('/api/expense', ['amount' => 1000])->json();
 
-        // Approve oleh Ani (bukan Ana), harus gagal
+        // Approve by Ani (not Ana), should fail
         $this->patchJson("/api/expense/{$expense['id']}/approve", ['approver_id' => $ani['id']])->assertStatus(422);
     }
 
     public function test_invalid_approver_cannot_approve()
     {
-        // Buat Approver dan Approval Stage
+        // Create Approvers and Approval Stages
         extract($this->createApproversAndStages());
 
-        // Buat 1 pengeluaran
+        // Create 1 expense
         $expense = $this->postJson('/api/expense', ['amount' => 1000])->json();
 
-        // Coba approve dengan approver yang tidak ada, harus gagal
+        // Try to approve with a non-existent approver, should fail
         $this->patchJson("/api/expense/{$expense['id']}/approve", ['approver_id' => 999])->assertStatus(422);
     }
 }

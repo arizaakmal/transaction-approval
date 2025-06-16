@@ -14,8 +14,8 @@ class StatusSeeder extends Seeder
     public function run(): void
     {
         Status::insert([
-            ['id' => 1, 'name' => 'menunggu persetujuan'],
-            ['id' => 2, 'name' => 'disetujui'],
+            ['id' => 1, 'name' => 'pending'],
+            ['id' => 2, 'name' => 'approved'],
         ]);
     }
 }

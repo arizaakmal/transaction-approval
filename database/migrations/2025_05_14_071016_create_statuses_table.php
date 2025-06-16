@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('statuses', function (Blueprint $table) {
             $table->id();
-            $table->enum('name', ['menunggu persetujuan', 'disetujui'])->default('menunggu persetujuan');
+            $table->enum('name', ['pending', 'approved'])->default('pending');
             $table->timestamps();
         });
     }
