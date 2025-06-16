@@ -1,4 +1,4 @@
-# Transaction Approval System
+# Transaction Approval System API
 
 This is a Laravel-based transaction approval system that allows for the creation and management of expenses with a defined multi-stage approval process.
 
@@ -22,7 +22,7 @@ The application exposes the following API endpoints:
     * **Request Body**:
         ```json
         {
-            "name": "string" // Unique name of the approver
+            "name": "string"
         }
         ```
     * **Response**: `201 Created` with the new approver's data.
@@ -34,7 +34,7 @@ The application exposes the following API endpoints:
     * **Request Body**:
         ```json
         {
-            "approver_id": "integer" // ID of an existing approver
+            "approver_id": "integer" 
         }
         ```
     * **Response**: `201 Created` with the new approval stage's data.
@@ -44,7 +44,7 @@ The application exposes the following API endpoints:
     * **Request Body**:
         ```json
         {
-            "approver_id": "integer" // New approver ID for the stage
+            "approver_id": "integer" 
         }
         ```
     * **Response**: `200 OK` with the updated approval stage's data, or `404 Not Found` if the stage does not exist.
@@ -56,7 +56,7 @@ The application exposes the following API endpoints:
     * **Request Body**:
         ```json
         {
-            "amount": "integer" // The amount of the expense
+            "amount": "integer" 
         }
         ```
     * **Response**: `201 Created` with the new expense's data (initial status will be 'menunggu persetujuan').
@@ -67,7 +67,7 @@ The application exposes the following API endpoints:
     * **Request Body**:
         ```json
         {
-            "approver_id": "integer" // The ID of the approver
+            "approver_id": "integer" 
         }
         ```
     * **Response**:
@@ -134,3 +134,8 @@ The application will be accessible at `http://127.0.0.1:8000` (or another port i
 ## Running Tests
 
 To run the feature tests for the expense approval flow:
+
+```bash
+php artisan test 
+```
+
