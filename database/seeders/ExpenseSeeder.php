@@ -15,7 +15,7 @@ class ExpenseSeeder extends Seeder
     {
         Expense::insert([
             ['id' => 1, 'amount' => 100000, 'status_id' => 1, 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 2, 'amount' => 200000, 'status_id' => 2, 'created_at' => now(), 'updated_at' => now()],
+            ['id' => 2, 'amount' => 200000, 'status_id' => 1, 'created_at' => now(), 'updated_at' => now()],
             ['id' => 3, 'amount' => 150000, 'status_id' => 1, 'created_at' => now(), 'updated_at' => now()],
         ]);
     }
