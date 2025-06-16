@@ -6,7 +6,7 @@ This is a Laravel-based transaction approval system that allows for the creation
 
 -   **Approver Management**: Create and manage individuals who can approve expenses.
 -   **Configurable Approval Stages**: Define a sequential flow of approvers required for an expense to be approved.
--   **Expense Submission**: Submit new expenses with an initial "pending approval" status.
+-   **Expense Submission**: Submit new expenses with an initial "pending" status.
 -   **Expense Approval**: Approvers can approve expenses, with the system enforcing the predefined approval sequence. An approver cannot approve the same expense twice.
 -   **Automatic Status Update**: Expenses automatically change their status to "approved" once all required approvers in the sequence have approved them.
 -   **Expense Details**: Retrieve detailed information about an expense, including its current status and a list of all recorded approvals.
