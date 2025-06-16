@@ -1,66 +1,136 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Transaction Approval System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This is a Laravel-based transaction approval system that allows for the creation and management of expenses with a defined multi-stage approval process.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+* **Approver Management**: Create and manage individuals who can approve expenses.
+* **Configurable Approval Stages**: Define a sequential flow of approvers required for an expense to be approved.
+* **Expense Submission**: Submit new expenses with an initial "pending approval" status.
+* **Expense Approval**: Approvers can approve expenses, with the system enforcing the predefined approval sequence. An approver cannot approve the same expense twice.
+* **Automatic Status Update**: Expenses automatically change their status to "approved" once all required approvers in the sequence have approved them.
+* **Expense Details**: Retrieve detailed information about an expense, including its current status and a list of all recorded approvals.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## API Endpoints
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+The application exposes the following API endpoints:
 
-## Learning Laravel
+### Approvers
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+* `POST /api/approvers`
+    * **Description**: Creates a new approver.
+    * **Request Body**:
+        ```json
+        {
+            "name": "string" // Unique name of the approver
+        }
+        ```
+    * **Response**: `201 Created` with the new approver's data.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### Approval Stages
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+* `POST /api/approval-stages`
+    * **Description**: Adds a new approver to the approval sequence.
+    * **Request Body**:
+        ```json
+        {
+            "approver_id": "integer" // ID of an existing approver
+        }
+        ```
+    * **Response**: `201 Created` with the new approval stage's data.
+* `PUT /api/approval-stages/{id}`
+    * **Description**: Updates an existing approval stage.
+    * **Parameters**: `id` (integer) - The ID of the approval stage to update.
+    * **Request Body**:
+        ```json
+        {
+            "approver_id": "integer" // New approver ID for the stage
+        }
+        ```
+    * **Response**: `200 OK` with the updated approval stage's data, or `404 Not Found` if the stage does not exist.
 
-## Laravel Sponsors
+### Expenses
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+* `POST /api/expense`
+    * **Description**: Submits a new expense for approval.
+    * **Request Body**:
+        ```json
+        {
+            "amount": "integer" // The amount of the expense
+        }
+        ```
+    * **Response**: `201 Created` with the new expense's data (initial status will be 'menunggu persetujuan').
 
-### Premium Partners
+* `PATCH /api/expense/{id}/approve`
+    * **Description**: Allows an approver to approve a specific expense. This endpoint enforces the approval sequence and prevents duplicate approvals from the same approver for the same expense.
+    * **Parameters**: `id` (integer) - The ID of the expense to approve.
+    * **Request Body**:
+        ```json
+        {
+            "approver_id": "integer" // The ID of the approver
+        }
+        ```
+    * **Response**:
+        * `200 OK` with the updated expense data if approved successfully.
+        * `422 Unprocessable Entity` if the approver has already approved the expense, or if the approval sequence is not followed, or if the approver ID is invalid.
+        * `404 Not Found` if the expense does not exist.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+* `GET /api/expense/{id}`
+    * **Description**: Retrieves the details of a specific expense, including its status and a list of all associated approvals.
+    * **Parameters**: `id` (integer) - The ID of the expense to retrieve.
+    * **Response**: `200 OK` with the expense details, or `404 Not Found` if the expense does not exist.
 
-## Contributing
+## Installation and Setup
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+1.  **Clone the repository**:
+    ```bash
+    git clone <repository-url>
+    cd transaction-approval
+    ```
 
-## Code of Conduct
+2.  **Install PHP dependencies**:
+    ```bash
+    composer install
+    ```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+3.  **Install JavaScript dependencies**:
+    ```bash
+    npm install
+    ```
 
-## Security Vulnerabilities
+4.  **Copy `.env.example` to `.env`**:
+    ```bash
+    cp .env.example .env
+    ```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+5.  **Generate application key**:
+    ```bash
+    php artisan key:generate
+    ```
 
-## License
+6.  **Configure your database** in the `.env` file. For example, using SQLite:
+    ```
+    DB_CONNECTION=sqlite
+    DB_DATABASE=/path/to/your/database.sqlite # e.g., /app/database/database.sqlite
+    ```
+    And create the `database.sqlite` file:
+    ```bash
+    touch database/database.sqlite
+    ```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+7.  **Run migrations and seed the database**:
+    ```bash
+    php artisan migrate --seed
+    ```
+    This will create the necessary tables and populate initial data for statuses, approvers, and approval stages.
+
+8.  **Start the development server**:
+    ```bash
+    php artisan serve
+    ```
+
+The application will be accessible at `http://127.0.0.1:8000` (or another port if specified by `php artisan serve`). The API documentation can be accessed at `/api/documentation`.
+
+## Running Tests
+
+To run the feature tests for the expense approval flow:
