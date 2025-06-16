@@ -17,8 +17,8 @@ class ExpenseApprovalTest extends TestCase
         parent::setUp();
 
         Status::insert([
-            ['id' => 1, 'name' => 'menunggu persetujuan'],
-            ['id' => 2, 'name' => 'disetujui'],
+            ['id' => 1, 'name' => 'pending'],
+            ['id' => 2, 'name' => 'approved'],
         ]);
     }
 
